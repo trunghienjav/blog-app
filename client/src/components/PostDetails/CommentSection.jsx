@@ -27,15 +27,19 @@ const CommentSection = ({ post }) => {
         <div className={classes.commentsOuterContainer}>
             <div className={classes.commentsInnerContainer}>
                 <Typography gutterBottom variant="h6">Comments</Typography>
-                {comments?.map((c, i) => (
+                {comments.length > 0 ? comments?.map((c, i) => (
                     <Typography key={i} gutterBottom variant="subtitle1">
                         <strong>{c.split(': ')[0]}</strong>
                         {c.split(':')[1]}
                     </Typography>
-                ))}
+                )) : (
+                    <div >
+                        <Typography>No comments yet</Typography>
+                    </div>
+                )}
                 <div ref={commentsRef} />
             </div>
-            {user?.result?.name ? (
+            {user?.result?.name && (
                 <div style={{ width: '70%' }}>
                     <Typography gutterBottom variant='h6'>
                         Write a comment
@@ -59,10 +63,6 @@ const CommentSection = ({ post }) => {
                     >
                         Comment
                     </Button>
-                </div>
-            ) : (
-                <div style={{ width: '70%', marginTop: '80px' }}>
-                <Typography>No comments yet</Typography>
                 </div>
             )}
         </div>

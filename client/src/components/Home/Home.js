@@ -13,7 +13,7 @@ import useStyles from './styles';
 function useQuery() { //set up url seach params, to know on which page we currently on and what search items we looking for
     return new URLSearchParams(useLocation().search);
 }
-
+//component Home này sẽ làm phần searching
 const Home = () => {
     const [currentId, setCurrentId] = useState(null)
     const classes = useStyles();
@@ -23,7 +23,7 @@ const Home = () => {
     const page = query.get('page') || 1;
     const searchQuery = query.get('searchQuery');
     const [search, setSearch] = useState('');
-    const [tags, setTags] = useState([]);
+    const [tags, setTags] = useState('');
 
     useEffect(() => {
         dispatch(getPosts());
@@ -39,17 +39,19 @@ const Home = () => {
     }
 
     const searchPost = () => {
-        if (search.trim() || tags) { //make sure there are no empty spaces
-            dispatch(getPostsBySearch({ search, tags: tags.join(',') }));
-            history.push(`/posts/search?searchQuery=${search || 'none'}&tags=${tags.join(',')}`);
+        if (search.trim() || tags) { //trim make sure there are no empty spaces ở 2 đầu
+            dispatch(getPostsBySearch({ search, tags: tags.replace(/ /g, "") }));
+            history.push(`/posts/search?searchQuery=${search || 'none'}&tags=${tags.replace(/ /g, "")}`);
         } else {
             history.push('/');
         }
     }
 
-    const handleAdd = (tag) => setTags([...tags, tag]);
+    // const handleAdd = (tag) => setTags([...tags, tag]);
 
-    const handleDelete = (tagToDelete) => setTags(tags.filter((tag) => tag !== tagToDelete));
+    // const handleDelete = (tagToDelete) => setTags(tags.filter((tag) => tag !== tagToDelete));
+
+    const handleTags = () => {}
 
     return (
         <Grow in>
@@ -77,13 +79,23 @@ const Home = () => {
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
                             />
-                            <ChipInput
+                            {/* <ChipInput
                                 style={{ margin: '10px 0' }}//top bot 10, left right 0
                                 value={tags}
                                 onAdd={handleAdd}
                                 onDelete={handleDelete}
                                 label="Search Tags"
                                 variant='outlined'
+                            /> */}
+                            <TextField
+                                name="tags"
+                                style={{ margin: '10px 0' }}//top bot 10, left right 0
+                                variant='outlined'
+                                label="Search Tags"
+                                value={tags}
+                                fullWidth
+                                // onChange={handleAdd}
+                                onChange={(e) => setTags(e.target.value)}
                             />
                             <Button
                                 className={classes.searchButton}

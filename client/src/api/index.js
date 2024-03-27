@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API = axios.create({ baseURL: 'http://localhost:5000' });
+const API = axios.create({ baseURL: 'https://blog-app-server-sandy.vercel.app/' });
+// const API = axios.create({ baseURL: 'http://localhost:5000' });
 
 API.interceptors.request.use((req) => { //sử dụng hàm này để gửi jwt qua middleware auth server
     if (localStorage.getItem('profile')) {

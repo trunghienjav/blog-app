@@ -22,6 +22,7 @@ const CommentSection = ({ post }) => {
 
         commentsRef.current.scrollIntoView({ behavior: 'smooth' });
     };
+
     return (
         <div className={classes.commentsOuterContainer}>
             <div className={classes.commentsInnerContainer}>
@@ -34,7 +35,7 @@ const CommentSection = ({ post }) => {
                 ))}
                 <div ref={commentsRef} />
             </div>
-            {user?.result?.name && (
+            {user?.result?.name ? (
                 <div style={{ width: '70%' }}>
                     <Typography gutterBottom variant='h6'>
                         Write a comment
@@ -58,6 +59,10 @@ const CommentSection = ({ post }) => {
                     >
                         Comment
                     </Button>
+                </div>
+            ) : (
+                <div style={{ width: '70%', marginTop: '80px' }}>
+                <Typography>No comments yet</Typography>
                 </div>
             )}
         </div>

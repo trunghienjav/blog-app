@@ -55,32 +55,40 @@ const PostDetails = () => {
       elevation={6}
     >
       <div className={classes.card}>
-        <Grid item xs={12} sm={12} lg={6}>
+        <Grid item xs={12} sm={12} md={6} lg={6}>
           <div className={classes.section}>
             <Typography variant="h3" component="h2">{post.title}</Typography>
             <Typography gutterBottom variant="h6" color="textSecondary" component="h2">{post.tags.map((tag) => `#${tag} `)}</Typography>
             <Typography variant="h6">Created by: {post.name}</Typography>
             <Typography variant="subtitle1" gutterBottom>{moment(post.createAt).fromNow()}</Typography>
             <Typography gutterBottom variant="body1" component="p" style={{ whiteSpace: 'pre-line' }} >{post.message}</Typography>
+            <Divider style={{ margin: '20px 0' }} />
             {/* Paper component does not recognize new line character */}
 
-            <Divider style={{ margin: '20px 0' }} />
+            {/* <Divider style={{ margin: '20px 0' }} />
             <Typography variant="body1"><strong>Realtime Chat - coming soon!</strong></Typography>
             <Divider style={{ margin: '20px 0' }} />
             <CommentSection post={post} />
-            <Divider style={{ margin: '20px 0' }} />
+            <Divider style={{ margin: '20px 0' }} /> */}
           </div>
         </Grid>
-        <Grid item xs={12} sm={12} lg={6}>
+        <Grid item xs={12} sm={12} md={6} lg={6}>
           <div className={classes.imageSection}>
             <CardMedia
               className={classes.media}
               image={post.selectedFile || 'https://user-images.githubusercontent.com/194400/49531010-48dad180-f8b1-11e8-8d89-1e61320e1d82.png'}
               component='img'
               alt={post.title}
+              style={{ marginBottom: '20px' }}
             />
           </div>
         </Grid>
+      </div>
+      <div>
+        <Typography variant="body1"><strong>Realtime Chat - coming soon!</strong></Typography>
+        <Divider style={{ width: '50%', margin: '20px 0' }} />
+        <CommentSection post={post} />
+        <Divider style={{ margin: '20px 0' }} />
       </div>
       {
         recommendedPosts?.length > 0 && (

@@ -25,8 +25,8 @@ const CommentSection = ({ post }) => {
 
     return (
         <div className={classes.commentsOuterContainer}>
-            <div className={classes.commentsInnerContainer}>
-                <Typography gutterBottom variant="h6">Comments</Typography>
+            <Typography gutterBottom variant="h6">Comments</Typography>
+            <div className={classes.commentsInnerContainer} style={{ width: '70%' }}>
                 {comments.length > 0 ? comments?.map((c, i) => (
                     <Typography key={i} gutterBottom variant="subtitle1">
                         <strong>{c.split(': ')[0]}</strong>

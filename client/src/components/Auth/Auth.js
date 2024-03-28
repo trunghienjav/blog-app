@@ -8,7 +8,7 @@ import Input from './Input';
 import useStyles from './styles';
 // import icon from './icon';
 import jwt_decode from 'jwt-decode';
-import { signin, signup } from '../../actions/auth'
+import { signin, signup } from '../../actions/auth';
 
 const initialState = {
     firstName: '',
@@ -25,19 +25,45 @@ const Auth = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [isSignUp, setIsSignUp] = useState(false);
     const [formData, setFormData] = useState(initialState);
+    const [errorMessage, setErrorMessage] = useState({});
+    // const [error, setError] = useState(false);
+    const error = false;
+
+    console.log("in ra errorMessage: ");
+    console.log(errorMessage);
 
     const handleShowPassword = () => {
         setShowPassword((prevShowPassword) => !prevShowPassword)
     }
 
+    const handleValidation = (err) => {
+        const validationError = {};
+        const status = err.response?.status;
+
+        if (status === 404 || status === 401) {
+            validationError.email = err.response?.data?.message;
+        } else if (status === 400 || status === 402) {
+            validationError.password = err.response?.data?.message;
+        }
+
+        setErrorMessage(validationError);
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(formData);
+        // console.log(formData);
 
         if (isSignUp) {
-            dispatch(signup(formData, history));//"we pass the history object to navigate once something happens 3:46:00"
-        }else{
-            dispatch(signin(formData, history));
+            dispatch(signup(formData, history))
+                .catch((err) => {
+                    handleValidation(err);
+                });
+            //"we pass the history object to navigate once something happens 3:46:00"
+        } else {
+            dispatch(signin(formData, history))
+                .catch((err) => {
+                    handleValidation(err);
+                });
         }
     }
     const handleChange = (e) => {
@@ -95,6 +121,8 @@ const Auth = () => {
                                         label="First Name"
                                         handleChange={handleChange}
                                         half
+                                    // error={error}
+                                    // helperText={errorMessage}
                                     />
                                     {/* autoFocus là khi vừa vào nó focus vào input luôn */}
                                     <Input
@@ -102,6 +130,8 @@ const Auth = () => {
                                         label="Last Name"
                                         handleChange={handleChange}
                                         half
+                                    // error={error}
+                                    // helperText={errorMessage}
                                     />
                                 </>
                             )
@@ -112,6 +142,8 @@ const Auth = () => {
                             handleChange={handleChange}
                             type="email"
                             autoFocus
+                            error={errorMessage.email ? true : false}
+                            helperText={errorMessage?.email}
                         />
                         <Input
                             name="password"
@@ -119,6 +151,9 @@ const Auth = () => {
                             handleShowPassword={handleShowPassword}
                             handleChange={handleChange}
                             type={showPassword ? 'text' : 'password'}
+                            // error={error}
+                            error={errorMessage?.password ? true : false}
+                            helperText={errorMessage.password}
                         />
                         {
                             isSignUp &&

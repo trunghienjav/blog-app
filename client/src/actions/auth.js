@@ -7,7 +7,9 @@ export const signin = (formatData, history) => async (dispatch) => { //có thể
         dispatch({ type: AUTH, payload: data});
         history.push('/');
     } catch (err) {
+        console.log("in ra lỗi");
         console.log(err);
+        throw err;
     }
 };
 
@@ -18,5 +20,6 @@ export const signup = (formatData, history) => async (dispatch) => {
         history.push('/');
     } catch (err) {
         console.log(err);
+        throw err;
     }
 };

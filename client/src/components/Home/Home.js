@@ -11,7 +11,7 @@ import useStyles from './styles';
 function useQuery() { //set up url seach params, to know on which page we currently on and what search items we looking for
     return new URLSearchParams(useLocation().search);
 }
-//component Home này sẽ làm phần searching
+//component Home này sẽ có phần searching
 const Home = () => {
     const [currentId, setCurrentId] = useState(null)
     const classes = useStyles();
@@ -32,14 +32,13 @@ const Home = () => {
         if (e.keyCode === 13) {
             //search post
             searchPost();
-
         }
     }
 
     const searchPost = () => {
         if (search.trim() || tags) { //trim make sure there are no empty spaces ở 2 đầu
             dispatch(getPostsBySearch({ search, tags: tags.replace(/ /g, "") }));
-            history.push(`/posts/search?searchQuery=${search || 'none'}&tags=${tags.replace(/ /g, "")}`);
+            history.push(`/posts/search?searchQuery=${search || 'none'}&tags=${tags.replace(/ /g, "")}`);//bỏ khoảng trắng khi search theo tag
         } else {
             history.push('/');
         }
@@ -48,8 +47,6 @@ const Home = () => {
     // const handleAdd = (tag) => setTags([...tags, tag]);
 
     // const handleDelete = (tagToDelete) => setTags(tags.filter((tag) => tag !== tagToDelete));
-
-    const handleTags = () => {}
 
     return (
         <Grow in>

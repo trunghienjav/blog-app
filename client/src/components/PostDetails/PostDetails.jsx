@@ -38,9 +38,9 @@ const PostDetails = () => {
   if (isLoading) {
     console.log("Chạy Loading");
     return (
-      <Paper elevation={6} className={classes.isLoading}>
+      <div elevation={6} className={classes.isLoading}>
         <CircularProgress size="7em" />
-      </Paper>
+      </div>
     );
   }
   const recommendedPosts = posts.filter(({ _id }) => _id !== post._id).slice(0, 4) //ko đc recommend chính nó. Hiện tại cắt mảng chỉ lấy 4 bài post liên quan, sắp tới sẽ làm tính năng in hết tất cả và có thanh trượt ngang

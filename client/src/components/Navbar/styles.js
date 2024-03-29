@@ -34,7 +34,7 @@ export default makeStyles((theme) => ({
   },
   profile: {
     display: 'flex',
-    justifyContent: 'space-between',
+    justifyContent: 'end',
     width: '400px',
     alignItems: 'center',
     [theme.breakpoints.down('sm')]: {

@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import useStyles from './styles';
 import memoriesLogo from '../../images/memories-Logo.png';
 import memoriesText from '../../images/memories-Text.png';
-import * as actionType from '../../constants/actionTypes';
+import { LOGOUT } from '../../constants/actionTypes';
 import jwt_decode from 'jwt-decode';
 
 const Navbar = () => {
@@ -14,13 +14,13 @@ const Navbar = () => {
     const history = useHistory(); //we can re-navigate to certain pages
     const location = useLocation(); //we know on which page are we currently,
     const [user, setUser] = useState(JSON.parse(localStorage.getItem('profile')));
-    console.log(user);
+    // console.log(user);
 
     const logout = () => {
-        dispatch({ type: actionType.LOGOUT });
-
-        history.push('/auth');
+        dispatch({ type: LOGOUT });
         setUser(null);
+        history.push('/auth');
+        console.log("Chạy logout");
     };
 
     useEffect(() => {
@@ -40,7 +40,7 @@ const Navbar = () => {
             color="inherit"
         >
             <Link to="/" className={classes.brandContainer}>
-                <img 
+                <img
                     src={memoriesText}
                     alt='icon'
                     height='45px'
@@ -84,7 +84,7 @@ const Navbar = () => {
                         variant='contained'
                         color="primary"
                     >
-                        Sign up
+                        Sign in
                     </Button>
                 )}
             </Toolbar>

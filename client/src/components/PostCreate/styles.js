@@ -1,6 +1,26 @@
 import { makeStyles } from '@material-ui/core/styles';
 
 export default makeStyles((theme) => ({
+  root: {
+    '& .MuiTextField-root': {
+      margin: theme.spacing(1),
+    },
+  },
+  paper: {
+    padding: theme.spacing(2),
+  },
+  form: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+  },
+  fileInput: {
+    width: '97%',
+    margin: '10px 0',
+  },
+  buttonSubmit: {
+    marginBottom: 10,
+  },
   media: {
     borderRadius: '20px',
     objectFit: 'cover',
@@ -27,20 +47,6 @@ export default makeStyles((theme) => ({
       marginLeft: 0,
     },
   },
-  recommendedPosts: {
-    display: 'flex',
-    overflowX: 'auto',
-    [theme.breakpoints.down('sm')]: {
-      flexDirection: 'column',
-    },
-  },
-  recommendedPost: {
-    margin: '20px',
-    cursor: 'pointer',
-    border: '2px solid #ccc',
-    borderRadius: '25px',
-    padding: '20px',
-  },
   loadingPaper: {
     display: 'flex',
     justifyContent: 'center',
@@ -48,15 +54,5 @@ export default makeStyles((theme) => ({
     padding: '20px',
     borderRadius: '15px',
     height: '39vh',
-  },
-  commentsOuterContainer: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    flexDirection: 'column',
-  },
-  commentsInnerContainer: {
-    // height: '150px',
-    overflowY: 'auto',
-    marginRight: '30px',
   },
 }));

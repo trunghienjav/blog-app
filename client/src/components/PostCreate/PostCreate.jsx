@@ -1,0 +1,145 @@
+import React, { useState } from 'react';
+import { Paper, Typography, TextField, CardMedia, Grid, Button } from '@material-ui/core';
+import FileBase from 'react-file-base64';
+import useStyles from './styles';
+import { useDispatch } from 'react-redux';
+import { createPost, updatePost } from '../../actions/posts';
+import { useHistory } from 'react-router-dom';
+
+const PostCreate = ({ currentId, setCurrentId }) => {
+
+  const classes = useStyles();
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const user = JSON.parse(localStorage.getItem('profile'));
+
+  const [postData, setPostData] = useState({
+    title: '',
+    message: '',
+    tags: '',
+    selectedFile: ''
+  });
+  console.log("in postData");
+  console.log(postData);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (currentId) { //nếu có current id
+      dispatch(updatePost(
+        currentId,
+        { ...postData, name: user?.result?.name },
+        //lấy cái name ở local storage chứ ko phải mình tự viết vào nữa
+      ));
+    } else {
+      dispatch(createPost({ ...postData, name: user?.result?.name }, history)); //thêm history để qua file action nó re-navigate 
+    }
+    clear();
+  }
+
+  const clear = () => {
+    // setCurrentId(null);
+    setPostData({
+      title: '',
+      message: '',
+      tags: '',
+      selectedFile: ''
+    })
+  }
+
+  return (
+    <div>
+      <Paper style={{ padding: '20px', borderRadius: '15px' }} elevation={6}>
+        <div className={classes.card}>
+            <Grid item xs={12} sm={12} md={6} lg={6}>
+              <div className={classes.section}>
+                <form
+                  autoComplete='off'
+                  noValidate
+                  className={`${classes.root} ${classes.form}`}
+                  onSubmit={handleSubmit}
+                >
+                  <Typography
+                    variant='h6'
+                    gutterBottom
+                  >
+                    {currentId ? 'Editing' : 'Creating'} a Memory
+                  </Typography>
+                  <TextField
+                    name='title'
+                    variant='outlined'
+                    label='Title'
+                    fullWidth
+                    required
+                    value={postData.title}
+                    onChange={(e) => setPostData({ ...postData, title: e.target.value })}
+                  //phải spread cái postData, vì đây là set 1 object, nếu ko nó sẽ set lại mỗi 1 key - value
+                  />
+                  <TextField
+                    name='message'
+                    minRows={5}
+                    required
+                    variant='outlined'
+                    label='Content'
+                    fullWidth
+                    multiline
+                    value={postData.message}
+                    // style={{ height: '150px' }}
+                    onChange={(e) => setPostData({ ...postData, message: e.target.value })}
+                  />
+                  <TextField
+                    name='tags'
+                    variant='outlined'
+                    label='Tags'
+                    fullWidth
+                    value={postData.tags}
+                    onChange={(e) => setPostData({ ...postData, tags: e.target.value.split(',') })}
+                  />
+                  <div className={classes.fileInput}>
+                    <FileBase
+                      type="file"
+                      multiple={false}
+                      onDone={({ base64 }) => setPostData({ ...postData, selectedFile: base64 })}
+                    />
+                  </div>
+                  <Button
+                    className={classes.buttonSubmit}
+                    variant='contained'
+                    color='primary'
+                    size='large'
+                    type='submit'
+                    fullWidth
+                  >
+                    Submit
+                  </Button>
+
+                  <Button
+                    className={classes.buttonSubmit}
+                    variant='contained'
+                    color="secondary"
+                    size='small'
+                    onClick={clear}
+                    fullWidth
+                  >
+                    Clear
+                  </Button>
+                </form>
+              </div>
+            </Grid>
+            <Grid item xs={12} sm={12} md={6} lg={6}>
+              <div className={classes.imageSection}>
+                <CardMedia
+                  className={classes.media}
+                  image={postData.selectedFile || 'https://user-images.githubusercontent.com/194400/49531010-48dad180-f8b1-11e8-8d89-1e61320e1d82.png'}
+                  component='img'
+                  alt={postData.title}
+                  style={{ marginBottom: '20px' }}
+                />
+              </div>
+            </Grid>
+        </div>
+      </Paper>
+    </div>
+  )
+}
+
+export default PostCreate

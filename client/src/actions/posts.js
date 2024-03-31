@@ -44,8 +44,9 @@ export const getPostsBySearch = (searchQuery) => async (dispatch) => {
 
 export const createPost = (post, history) => async (dispatch) => {
     try {
-        dispatch({ type: START_LOADING });
         const { data } = await api.createPost(post);
+        dispatch({ type: START_LOADING });// để ở dưới dispatch để khi mình createpost mà ko điền thì nó sẽ ko chạy cái loading trước
+        
         // console.log("Khởi chạy dispatch createPost");
         // console.log(post);
         history.push(`/posts/${data._id}`);
@@ -53,16 +54,21 @@ export const createPost = (post, history) => async (dispatch) => {
         dispatch({ type: END_LOADING });
     } catch (err) {
         console.log(err);
+        throw  err;
     }
 }
 
-export const updatePost = (id, post) => async (dispatch) => {
+export const updatePost = (id, post, history) => async (dispatch) => {
     try {
         const { data } = await api.updatePost(id, post);
+        dispatch({ type: START_LOADING });
 
         dispatch({ type: UPDATE, payload: data });
+        history.push(`/posts/${data._id}`);//sv trả về dạng _id
+        dispatch({ type: END_LOADING });
     } catch (err) {
         console.log(err);
+        throw  err;
     }
 }
 

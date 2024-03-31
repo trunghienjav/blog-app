@@ -9,7 +9,7 @@ export const getPosts = async (req, res) => {
     const { page } = req.query;
 
     try {
-        const LIMIT = 8; //the number of posts per page
+        const LIMIT = 4; //the number of posts per page
         const startIndex = (Number(page) - 1) * LIMIT;
         const total = await PostMessage.countDocuments({}); //now how many post do we have, cause we have to 
         const posts = await PostMessage.find().sort({ _id: -1 }).limit(LIMIT).skip(startIndex);
@@ -56,7 +56,9 @@ export const getPostsBySearch = async (req, res) => {
 export const createPost = async (req, res) => {
     const post = req.body;
     // console.log(post);
-    const tags = post.tags.map((tag) => tag.trim());
+    if(!post?.title || !post?.message) return res.status(404).json({ message: 'please fill this input' });
+
+    const tags = post?.tags?.map((tag) => tag.trim());
 
     const newPostMessage = new PostMessage({ ...post, tags: tags, creator: req.userId, createdAt: new Date().toISOString() });
 

@@ -38,6 +38,7 @@ const CommentSection = ({ post }) => {
                     </div>
                 )}
                 <div ref={commentsRef} />
+                {/* cho no 1 cai div, de no lay lam moc ma scroll xuong */}
             </div>
             {user?.result?.name && (
                 <div style={{ width: '70%' }}>

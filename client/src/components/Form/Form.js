@@ -26,6 +26,7 @@ const Form = ({ currentId, setCurrentId }) => {
 
     const history = useHistory();
 
+    //sau khi ấn ... get được post nên setPostData lại
     useEffect(() => {
         if (post) setPostData(post);
         // console.log("useEffect của Form bị gọi lại");
@@ -84,6 +85,7 @@ const Form = ({ currentId, setCurrentId }) => {
                     variant='outlined'
                     label='Title'
                     fullWidth
+                    required
                     value={postData.title}
                     onChange={(e) => setPostData({ ...postData, title: e.target.value })}
                 //phải spread cái postData, vì đây là set 1 object, nếu ko nó sẽ set lại mỗi 1 key - value
@@ -94,6 +96,7 @@ const Form = ({ currentId, setCurrentId }) => {
                     label='Message'
                     fullWidth
                     multiline
+                    required
                     value={postData.message}
                     onChange={(e) => setPostData({ ...postData, message: e.target.value })}
                 />

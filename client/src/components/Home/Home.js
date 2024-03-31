@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react'
-import { Container, Grow, Grid, Paper, AppBar, TextField, Button } from '@material-ui/core'
+import React, { useState, useEffect } from 'react';
+import { Container, Grow, Grid, AppBar, TextField, Button, Modal, Typography } from '@material-ui/core';
 import { useDispatch } from "react-redux";
 import { useHistory, useLocation } from 'react-router-dom';
 import { getPosts, getPostsBySearch } from '../../actions/posts';
 import Pagination from '../Pagination';
 import Posts from '../../components/Posts/Posts';
-import Form from '../../components/Form/Form';
+// import Form from '../../components/Form/Form';
 import useStyles from './styles';
 
 function useQuery() { //set up url seach params, to know on which page we currently on and what search items we looking for
@@ -13,7 +13,7 @@ function useQuery() { //set up url seach params, to know on which page we curren
 }
 //component Home này sẽ có phần searching
 const Home = () => {
-    const [currentId, setCurrentId] = useState(null)
+    const [currentId, setCurrentId] = useState(null);
     const classes = useStyles();
     const dispatch = useDispatch();
     const history = useHistory();
@@ -22,6 +22,7 @@ const Home = () => {
     const searchQuery = query.get('searchQuery');
     const [search, setSearch] = useState('');
     const [tags, setTags] = useState('');
+    const user = JSON.parse(localStorage.getItem('profile'));
 
     useEffect(() => {
         dispatch(getPosts());
@@ -48,10 +49,69 @@ const Home = () => {
 
     // const handleDelete = (tagToDelete) => setTags(tags.filter((tag) => tag !== tagToDelete));
 
+    const [openModal, setOpenModal] = useState(false);
+    const [modalStyle] = useState(getModalStyle);
+
+    const openCreatePost = () => {
+
+        if (!user) {
+            setOpenModal(true);
+        } else {
+            history.push(`/posts/create`)
+        }
+    };
+    const handleCloseModal = () => {
+        setOpenModal(false);
+    };
+
+    //chỉnh cái modal ra giữa mh
+    function getModalStyle() {
+        const top = 50 ;
+        const left = 50 ;
+
+        return {
+            top: `${top}%`,
+            left: `${left}%`,
+            transform: `translate(-${top}%, -${left}%)`,
+        };
+    }
+
     return (
         <Grow in>
             {/* grow là hiệu ứng hiện ra https://mui.com/material-ui/transitions/ */}
             <Container maxWidth="xl">
+                {/* {user && ( */}
+                <div>
+                    <Button
+                        className={classes.buttonSubmit}
+                        variant='contained'
+                        color='primary'
+                        size='large'
+                        type='submit'
+                        style={{ marginBottom: '10px' }}
+                        onClick={openCreatePost}
+                    >
+                        Create
+                    </Button>
+                    <Modal
+                        open={openModal}
+                        onClose={handleCloseModal}
+                        aria-labelledby="modal-title"
+                        aria-describedby="modal-description"
+                    >
+                        <div style={modalStyle} className={classes.paper}>
+                            <Typography id="modal-title" variant="h6" component="h2">
+                                Please Log In
+                            </Typography>
+                            <Typography id="modal-description" sx={{ mt: 2 }}>
+                                You need to Sign In before creating a new post.
+                                こんにちは！ようこそ。
+                                \\(^ ^)// 
+                            </Typography>
+                        </div>
+                    </Modal>
+                </div>
+                {/* )} */}
                 <Grid
                     className={classes.gridContainer}
                     container
@@ -89,6 +149,7 @@ const Home = () => {
                                 label="Search Tags"
                                 value={tags}
                                 fullWidth
+                                onKeyDown={handleOnKeyDown}
                                 // onChange={handleAdd}
                                 onChange={(e) => setTags(e.target.value)}
                             />
@@ -101,17 +162,17 @@ const Home = () => {
                                 Search
                             </Button>
                         </AppBar>
-                        <Form
+                        {/* <Form
                             currentId={currentId}
                             setCurrentId={setCurrentId}
-                        />
-                        {(!searchQuery && !tags.length) && (
-                            <Paper elevation={6} className={classes.pagination}>
-                                <Pagination page={page} />
-                            </Paper>
-                        )}
+                        /> */}
                     </Grid>
                 </Grid>
+                {(!searchQuery && !tags.length) && (
+                    <div elevation={6} className={classes.pagination}>
+                        <Pagination page={page} />
+                    </div>
+                )}
             </Container>
         </Grow>
     )

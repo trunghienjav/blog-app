@@ -1,10 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Card, CardActions, CardContent, CardMedia, Button, Typography, ButtonBase } from '@material-ui/core'
 import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
 import ThumbUpOutlinedIcon from '@material-ui/icons/ThumbUpOutlined';
 import DeleteIcon from '@material-ui/icons/Delete';
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
-// import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined';
+// import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 
 import moment from 'moment';
 import useStyles from './styles';
@@ -19,6 +18,23 @@ const Post = ({ post, setCurrentId }) => {
   const dispatch = useDispatch();
   const user = JSON.parse(localStorage.getItem('profile'));
   const history = useHistory();
+
+  const [likes, setLikes] = useState(post?.likes);
+
+  const userId = user?.result?.sub || user?.result?._id;
+  const hasLikedPost = post?.likes.find((like) => like === userId);
+
+  const handleLike = async () => {
+    dispatch(likePost(post._id))
+
+    if (hasLikedPost) {
+      setLikes(post?.likes.filter((like) => like !== userId));
+    } else {
+      setLikes([...post?.likes, userId]); //spread all of current likes, and add new ones
+    };
+  };
+
+
   // console.log(`In ra Post`);
   // console.log(post.creator);
 
@@ -29,12 +45,12 @@ const Post = ({ post, setCurrentId }) => {
   // }
   //tạo sub component Likes
   const Likes = () => {
-    if (post.likes.length > 0) { //tìm like thuộc bài đăng của mình
-      return post.likes.find((like) => like === (user?.result?.sub || user?.result?._id))
+    if (likes.length > 0) { //tìm like thuộc bài đăng của mình
+      return likes.find((like) => like === userId)
         ? (
-          <><ThumbUpAltIcon fontSize='small' />&nbsp;{post.likes.length > 2 ? `You and ${post.likes.length - 1} others` : `${post.likes.length} like${post.likes.length > 1 ? 's' : ''}`}</>
+          <><ThumbUpAltIcon fontSize='small' />&nbsp;{likes.length > 2 ? `You and ${likes.length - 1} others` : `${likes.length} like${likes.length > 1 ? 's' : ''}`}</>
         ) : (
-          <><ThumbUpOutlinedIcon fontSize="small" />&nbsp;{post.likes.length} {post.likes.length === 1 ? 'Like' : 'Likes'}</>
+          <><ThumbUpOutlinedIcon fontSize="small" />&nbsp;{likes.length} {likes.length === 1 ? 'Like' : 'Likes'}</>
         )
     }
     return <><ThumbUpOutlinedIcon fontSize="small" />&nbsp;Like</>;
@@ -49,24 +65,24 @@ const Post = ({ post, setCurrentId }) => {
       raised
       elevation={6}
     >
-      {/* <ButtonBase
+      <ButtonBase
         component="span"
         className={classes.cardAction}
         onClick={openPost}
-      > */}
-      <CardMedia
-        className={classes.media}
-        image={post.selectedFile || 'https://user-images.githubusercontent.com/194400/49531010-48dad180-f8b1-11e8-8d89-1e61320e1d82.png'}
-        title={post.title}
-      />
-      <div className={classes.overlay}>
-        <Typography variant="h6">{post.name}</Typography>
-        <Typography variant="body2">{moment(post.createAt).fromNow()}</Typography>
-      </div>
+      >
+        <CardMedia
+          className={classes.media}
+          image={post.selectedFile || 'https://user-images.githubusercontent.com/194400/49531010-48dad180-f8b1-11e8-8d89-1e61320e1d82.png'}
+          title={post.title}
+        />
+        <div className={classes.overlay}>
+          <Typography variant="h6">{post.name}</Typography>
+          <Typography variant="body2">{moment(post.createAt).fromNow()}</Typography>
+        </div>
 
-      {/* nút 3 chấm */}
+        {/* nút 3 chấm */}
 
-      {(user?.result?.sub === post?.creator || user?.result?._id === post?.creator) && (
+        {/* {(user?.result?.sub === post?.creator || user?.result?._id === post?.creator) && (
         <div className={classes.overlay2}>
           <Button
             style={{ color: 'white' }}
@@ -78,12 +94,7 @@ const Post = ({ post, setCurrentId }) => {
             <MoreHorizIcon fontSize="medium" />
           </Button>
         </div>
-      )}
-      <ButtonBase
-        component="span"
-        className={classes.cardAction}
-        onClick={openPost}
-      >
+      )} */}
         <div className={classes.details}>
           <Typography
             variant="body2"
@@ -119,7 +130,7 @@ const Post = ({ post, setCurrentId }) => {
           size="small"
           color="primary"
           disabled={!user?.result}
-          onClick={() => dispatch(likePost(post._id, history))}
+          onClick={handleLike}
         >
           <Likes />
         </Button>

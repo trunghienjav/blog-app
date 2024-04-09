@@ -24,6 +24,14 @@ const Post = ({ post, setCurrentId }) => {
   const userId = user?.result?.sub || user?.result?._id;
   const hasLikedPost = post?.likes.find((like) => like === userId);
 
+  let convertedMessage;
+  if (post.message.length > 200) {
+    convertedMessage = post.message.substring(0, 200) + '...';
+  } else {
+    convertedMessage = post.message;
+  }
+  // post.message.length > 200) ? post.message.substring(0, 200) + '...' : post.message
+
   const handleLike = async () => {
     dispatch(likePost(post._id))
 
@@ -76,8 +84,8 @@ const Post = ({ post, setCurrentId }) => {
           title={post.title}
         />
         <div className={classes.overlay}>
-          <Typography variant="h6">{post.name}</Typography>
-          <Typography variant="body2">{moment(post.createAt).fromNow()}</Typography>
+          {/* <Typography variant="body2">{post.name}</Typography> */}
+          {/* <Typography variant="body2">{moment(post.createAt).fromNow()}</Typography> */}
         </div>
 
         {/* nút 3 chấm */}
@@ -117,10 +125,10 @@ const Post = ({ post, setCurrentId }) => {
           <Typography
             variant="body2"
             color="textSecondary"
-            component="p"
+            component="span"
+            //thêm comp span để ko hiển thị lỗi
           >
-            {/* {post.message} */}
-            {(post.message.length > 200) ? post.message.substring(0, 200) + '...' : post.message}
+            <div dangerouslySetInnerHTML={{ __html: convertedMessage }}></div>
           </Typography>
         </CardContent>
       </ButtonBase>

@@ -72,13 +72,21 @@ const PostDetails = () => {
         elevation={6}
       >
         <div className={classes.card}>
-          <Grid item xs={12} sm={12} md={6} lg={6}>
+          {/* content */}
+          <Grid item xs={12} sm={12} md={9} lg={9}>
             <div className={classes.section}>
-              <Typography variant="h3" component="h2">{post.title}</Typography>
+              <Typography variant="h3" component="h2" style={{textAlign: 'center'}}>{post.title}</Typography>
               <Typography gutterBottom variant="h6" color="textSecondary" component="h2">{post.tags.map((tag) => `#${tag} `)}</Typography>
               <Typography variant="h6">Created by: {post.name}</Typography>
               <Typography variant="subtitle1" gutterBottom>{moment(post.createAt).fromNow()}</Typography>
-              <Typography gutterBottom variant="body1" component="p" style={{ whiteSpace: 'pre-line' }} >{post.message}</Typography>
+              <Typography
+                gutterBottom
+                variant="body1"
+                component="div"
+                style={{ whiteSpace: 'pre-line' }}
+              >
+                <div className={classes.ckContent} dangerouslySetInnerHTML={{ __html: post.message }} />
+              </Typography>
               <Divider style={{ margin: '20px 0' }} />
               {/* whiteSpace: 'pre-line : fix lỗi Paper component does not recognize new line character */}
 
@@ -89,15 +97,23 @@ const PostDetails = () => {
             <Divider style={{ margin: '20px 0' }} /> */}
             </div>
           </Grid>
-          <Grid item xs={12} sm={12} md={6} lg={6}>
+
+          {/* image */}
+          <Grid item xs={12} sm={12} md={3} lg={3}>
             <div className={classes.imageSection}>
-              <CardMedia
-                className={classes.media}
-                image={post.selectedFile || 'https://user-images.githubusercontent.com/194400/49531010-48dad180-f8b1-11e8-8d89-1e61320e1d82.png'}
-                component='img'
-                alt={post.title}
-                style={{ marginBottom: '20px' }}
-              />
+              <figure>
+                <CardMedia
+                  className={classes.media}
+                  image={post.selectedFile || 'https://user-images.githubusercontent.com/194400/49531010-48dad180-f8b1-11e8-8d89-1e61320e1d82.png'}
+                  component='img'
+                  alt={post.title}
+                />
+                <figcaption className={classes.figcaption}>
+                  <Typography variant='body2'>
+                    {post.title}
+                  </Typography>
+                </figcaption>
+              </figure>
             </div>
           </Grid>
         </div>

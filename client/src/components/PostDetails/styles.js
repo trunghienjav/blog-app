@@ -6,11 +6,13 @@ export default makeStyles((theme) => ({
     objectFit: 'cover',
     width: '100%',
     maxHeight: '600px',
+    marginBottom: '6px'
 
   },
   card: {
     display: 'flex',
     width: '100%',
+    // justifyContent: 'center',
     [theme.breakpoints.down('sm')]: {
       flexWrap: 'wrap',
       flexDirection: 'column',
@@ -26,6 +28,9 @@ export default makeStyles((theme) => ({
     [theme.breakpoints.down('sm')]: {
       marginLeft: 0,
     },
+  },
+  figcaption: {
+    textAlign: 'center',
   },
   recommendedPosts: {
     display: 'flex',
@@ -59,4 +64,16 @@ export default makeStyles((theme) => ({
     overflowY: 'auto',
     marginRight: '30px',
   },
+  ckContent: {
+    '& img': {
+      /* Điều chỉnh các thuộc tính CSS cho thẻ <img> trong .ckContent */
+      maxWidth: '100%', /* Giới hạn kích thước tối đa của hình ảnh */
+      borderRadius: '25px',
+    },
+    '& figcaption': {
+      /* CSS cho phần tử figcaption */
+      textAlign: 'center',
+      fontSize: 'small',
+    },
+  }
 }));

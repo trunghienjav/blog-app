@@ -1,15 +1,80 @@
 import express from 'express';
 import mongoose from "mongoose"
 import PostMessage from "../models/postMessage.js" //nhớ phải thêm .js
+import Image from "../models/image.js" //nhớ phải thêm .js
+import fs from 'fs';
+import path from 'path';
+const __dirname = path.resolve();//để dùng được cái ckeditor, đoạn này cài tùm lum thứ hết =))
+import multer from 'multer';
 
 const router = express.Router(); //tại sao lại export thêm cái router ở đây nhỉ
 
-//posts ở controllers
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        // Thư mục lưu trữ file upload
+        cb(null, 'uploads/');
+    },
+    filename: (req, file, cb) => {
+        // Đặt tên file cho file upload
+        cb(null, Date.now() + path.extname(file.originalname));
+    }
+});
+
+// Khởi tạo middleware Multer với cấu hình đã định nghĩa
+const upload = multer({
+    storage: storage,
+    limits: {
+        fileSize: 10 * 1024 * 1024 // Giới hạn kích thước file upload (ở đây là 10MB)
+    },
+    fileFilter: (req, file, cb) => {
+        // Kiểm tra loại file được phép upload
+        if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+            cb(null, true);
+        } else {
+            cb(new Error('Unsupported file format. Please upload a PNG or JPG file.'));
+        }
+    }
+}).single('upload'); // Chỉ cho phép upload một file với key là 'upload'
+
+export const uploadImage = async (req, res) => {
+
+    var TempFile = req.files.upload;
+    var TempPathfile = TempFile.path;
+    console.log("TempFile is: ");
+    console.log(TempFile);
+    console.log("TempPathfile is: "); //public\images\uVj_xCATOF_G_TxGOsnWjSXt.jpg
+    console.log(TempPathfile);
+    const targetPathUrl = path.join(__dirname, "./uploads/" + TempFile.name);
+    console.log("targetPathUrl is: ");
+    console.log(targetPathUrl);
+
+    // Sử dụng middleware Multer để xử lý upload file
+    console.log("Vào uploadImage");
+    upload(req, res, (err) => {
+
+        fs.rename(TempPathfile, targetPathUrl, err => { //di chuyển file từ đường dẫn tạm thời sang đường dẫn mục tiêu
+            if (err) {
+                console.log(err.message);
+                res.status(500).json({
+                    uploaded: false,
+                    error: "Error uploading image"
+                });
+            } else {
+                const imageUrl = `${TempFile.name}`;
+                res.status(200).json({
+                    uploaded: true,
+                    url: imageUrl
+                });
+            };
+        });
+    });
+};
+
 export const getPosts = async (req, res) => {
     const { page } = req.query;
 
     try {
-        const LIMIT = 4; //the number of posts per page
+        const LIMIT = 6; //the number of posts per page
         const startIndex = (Number(page) - 1) * LIMIT;
         const total = await PostMessage.countDocuments({}); //now how many post do we have, cause we have to 
         const posts = await PostMessage.find().sort({ _id: -1 }).limit(LIMIT).skip(startIndex);
@@ -56,7 +121,7 @@ export const getPostsBySearch = async (req, res) => {
 export const createPost = async (req, res) => {
     const post = req.body;
     // console.log(post);
-    if(!post?.title || !post?.message) return res.status(404).json({ message: 'please fill this input' });
+    if (!post?.title || !post?.message) return res.status(404).json({ message: 'please fill this input' });
 
     const tags = post?.tags?.map((tag) => tag.trim());
 
@@ -120,5 +185,6 @@ export const commentPost = async (req, res) => {
     const updatePost = await PostMessage.findByIdAndUpdate(id, post, { new: true });//tìm post phù hợp, push cmt vào property cmts, sau đó update trong db
     res.json(updatePost);
 };
+
 
 export default router;

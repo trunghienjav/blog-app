@@ -7,8 +7,8 @@ import Auth from "./components/Auth/Auth";
 import PostDetails from "./components/PostDetails/PostDetails"
 import PostCreate from "./components/PostCreate/PostCreate"
 import PostUpdate from "./components/PostUpdate/PostUpdate"
+const user = JSON.parse(localStorage.getItem('profile'));
 const App = () => {
-    const user = JSON.parse(localStorage.getItem('profile'));
     // console.log("user at app.js");
     // console.log(user);
     return (
@@ -25,6 +25,7 @@ const App = () => {
                     <Route path="/posts" exact component={Home} />
                     <Route path="/posts/search" exact component={Home} />
                     <Route path="/posts/create" exact component={PostCreate} />
+                    {/* <Route path="/posts/create" exact render={() => (user ? <PostCreate /> : <Redirect to="/auth" />)} /> */}
                     {/* nhớ phải để cái route create trên route id, nếu ko nó nhảy vào tìm cái id trước, route nó chạy theo thứ tự từ trên xuống dưới í */}
                     <Route path="/posts/update/:id" component={PostUpdate} />
                     <Route path="/posts/:id" component={PostDetails} />

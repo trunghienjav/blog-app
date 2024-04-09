@@ -1,5 +1,5 @@
 import * as api from '../api'
-import { FETCH_ALL, FETCH_BY_SEARCH, FETCH_POST, START_LOADING, END_LOADING, CREATE, UPDATE, DELETE, LIKE, COMMENT } from '../constants/actionTypes';
+import { FETCH_ALL, FETCH_BY_SEARCH, FETCH_POST, START_LOADING, END_LOADING, CREATE, UPDATE, DELETE, LIKE, COMMENT, UPLOAD_IMAGE } from '../constants/actionTypes';
 
 //Action Creators, file action sẽ fetch dữ liệu ở api ra, gửi cho App.js
 export const getPosts = (page) => async (dispatch) => {
@@ -46,7 +46,7 @@ export const createPost = (post, history) => async (dispatch) => {
     try {
         const { data } = await api.createPost(post);
         dispatch({ type: START_LOADING });// để ở dưới dispatch để khi mình createpost mà ko điền thì nó sẽ ko chạy cái loading trước
-        
+
         // console.log("Khởi chạy dispatch createPost");
         // console.log(post);
         history.push(`/posts/${data._id}`);
@@ -54,7 +54,7 @@ export const createPost = (post, history) => async (dispatch) => {
         dispatch({ type: END_LOADING });
     } catch (err) {
         console.log(err);
-        throw  err;
+        throw err;
     }
 }
 
@@ -68,7 +68,7 @@ export const updatePost = (id, post, history) => async (dispatch) => {
         dispatch({ type: END_LOADING });
     } catch (err) {
         console.log(err);
-        throw  err;
+        throw err;
     }
 }
 
@@ -104,3 +104,13 @@ export const deletePost = (id) => async (dispatch) => {
         console.log(err);
     }
 }
+
+// export const uploadImage = () => async (dispatch) => {
+//     try {
+//         const { data } = await api.uploadImage();
+//         dispatch({ type: UPLOAD_IMAGE, payload: data });
+
+//     } catch (err) {
+//         console.log(err);
+//     }
+// }

@@ -20,6 +20,7 @@ export default class CustomUploadApdapter {
                 .catch(err => {
                     reject(err);
                     console.log("mài bị ngáo à lỗi rồi");
+                    console.log(err);
                 });
         }))
     }

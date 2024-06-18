@@ -44,13 +44,14 @@ export const uploadImage = async (req, res) => {
     console.log(TempFile);
     console.log("TempPathfile is: "); //public\images\uVj_xCATOF_G_TxGOsnWjSXt.jpg
     console.log(TempPathfile);
-    const targetPathUrl = path.join(__dirname, "./uploads/" + TempFile.name);
+    const targetPathUrl = path.join(__dirname, "./public/uploads/" + TempFile.name);
     console.log("targetPathUrl is: ");
     console.log(targetPathUrl);
 
     // Sử dụng middleware Multer để xử lý upload file
     console.log("Vào uploadImage");
     upload(req, res, (err) => {
+        console.log("in ra--------------------1: ");
 
         fs.rename(TempPathfile, targetPathUrl, err => { //di chuyển file từ đường dẫn tạm thời sang đường dẫn mục tiêu
             if (err) {

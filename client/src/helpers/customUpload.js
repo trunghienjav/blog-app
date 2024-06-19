@@ -12,10 +12,11 @@ export default class CustomUploadApdapter {
             formData.append('upload', file);
             uploadImage('posts/upload', formData)
                 .then(res => {
+                    console.log("in ra res data-------------------------");
+                    console.log(res);
                     resolve({
                         '700': `${baseURL}/${res.data.url}`,
                     })
-                    console.log(res.data);
                 })
                 .catch(err => {
                     reject(err);

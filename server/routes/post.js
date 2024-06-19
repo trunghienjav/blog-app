@@ -4,7 +4,7 @@ import { getPosts, getPost, getPostsBySearch, createPost, updatePost, deletePost
 import auth from '../middleware/auth.js';
 
 import multipart from 'connect-multiparty';
-const MultipartyMiddleware = multipart({ uploadDir: 'public/images' });
+const MultipartyMiddleware = multipart({ uploadDir: 'public/uploads' });
 const router = express.Router();
 
 

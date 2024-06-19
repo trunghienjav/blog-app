@@ -12,7 +12,7 @@ const router = express.Router(); //tại sao lại export thêm cái router ở 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         // Thư mục lưu trữ file upload
-        cb(null, 'uploads/');
+        cb(null, "public/uploads/");
     },
     filename: (req, file, cb) => {
         // Đặt tên file cho file upload
@@ -58,10 +58,10 @@ export const uploadImage = async (req, res) => {
                 console.log(err.message);
                 res.status(500).json({
                     uploaded: false,
-                    error: "Error uploading image"
+                    error: "Error uploading image 123"
                 });
             } else {
-                const imageUrl = `${TempFile.name}`;
+                const imageUrl = `uploads/${TempFile.name}`;
                 res.status(200).json({
                     uploaded: true,
                     url: imageUrl

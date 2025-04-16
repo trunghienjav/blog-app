@@ -2,10 +2,14 @@ import express from 'express';
 import { getPosts, getPost, getPostsBySearch, createPost, updatePost, deletePost, likePost, commentPost, uploadImage } from '../controllers/posts.js';
 import auth from '../middleware/auth.js';
 import multipart from 'connect-multiparty';
+import dotenv from 'dotenv';
 
-// Configure multipart middleware with the correct upload directory
+dotenv.config();
+
+// Configure multipart middleware with appropriate settings for different environments
 const MultipartyMiddleware = multipart({ 
-    uploadDir: 'public/uploads',
+    // For Vercel deployment, we don't specify uploadDir as we'll handle the buffer directly
+    ...(process.env.VERCEL ? {} : { uploadDir: 'public/uploads' }),
     maxFilesSize: 10 * 1024 * 1024 // 10MB
 });
 

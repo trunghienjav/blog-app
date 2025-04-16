@@ -69,14 +69,22 @@ export const uploadImage = async (req, res) => {
 
         // Upload to Cloudinary
         try {
-            const result = await cloudinary.uploader.upload(file.path, {
-                folder: 'hienImage',
-                resource_type: 'auto',
-                transformation: [
-                    { width: 800, crop: "scale" }, // Thay đổi kích thước và giữ tỷ lệ
-                    { quality: "auto:good" } // Tự động tối ưu hóa chất lượng
-                ]
-            });
+            // Check if we're running on Vercel (serverless) or local environment
+            const uploadData = process.env.VERCEL 
+                ? { data: file.buffer || Buffer.from(file.data) } // Use buffer directly on Vercel
+                : { path: file.path }; // Use file path in local environment
+            
+            const result = await cloudinary.uploader.upload(
+                uploadData.path || uploadData.data, 
+                {
+                    folder: 'hienImage',
+                    resource_type: 'auto',
+                    transformation: [
+                        { width: 800, crop: "scale" }, // Thay đổi kích thước và giữ tỷ lệ
+                        { quality: "auto:good" } // Tự động tối ưu hóa chất lượng
+                    ]
+                }
+            );
 
             // Return the response in CKEditor expected format
             return res.status(200).json({

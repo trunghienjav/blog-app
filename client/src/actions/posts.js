@@ -8,6 +8,8 @@ export const getPosts = (page) => async (dispatch) => {
         const { data: { data, currentPage, numberOfPages } } = await api.fetchPosts(page); //call api để lấy dữ liệu từ backend
         // console.log("Dữ liệu trả về fe khi getPosts");
         // console.log(data);
+        //  dùng axios, bạn luôn phải truy cập response.data → đó là lý do vì sao thường thấy const { data } = response;.
+        // tức là cái key data ngoài cùng mặc định phải đặt như vậy
         dispatch({ type: FETCH_ALL, payload: { data, currentPage, numberOfPages } }); //sau đó gửi đến xử lí ở reducers, lưu vào store
         dispatch({ type: END_LOADING });
     } catch (err) {
@@ -64,7 +66,7 @@ export const updatePost = (id, post, history) => async (dispatch) => {
         dispatch({ type: START_LOADING });
 
         dispatch({ type: UPDATE, payload: data });
-        history.push(`/posts/${data._id}`);//sv trả về dạng _id
+        history.push(`/posts/${data._id}`);//server trả về dạng _id
         dispatch({ type: END_LOADING });
     } catch (err) {
         console.log(err);

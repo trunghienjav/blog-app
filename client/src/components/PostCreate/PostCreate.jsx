@@ -59,6 +59,21 @@ const PostCreate = ({ currentId, setCurrentId }) => {
       shouldNotGroupWhenFull: true
     },
     extraPlugins: [MyCustomUploadAdapterPlugin],
+    image: {
+      // Cấu hình cho plugin hình ảnh
+      styles: {
+        options: [
+          { name: 'responsive', title: 'Responsive', className: 'img-responsive' }
+        ]
+      },
+      resizeOptions: [
+        {
+          name: 'responsive',
+          label: 'Responsive',
+          value: null
+        }
+      ]
+    }
   };
 
   const [editorData, setEditorData] = useState('');

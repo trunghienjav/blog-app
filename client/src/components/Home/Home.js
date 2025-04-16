@@ -66,8 +66,8 @@ const Home = () => {
 
     //chỉnh cái modal ra giữa mh
     function getModalStyle() {
-        const top = 50 ;
-        const left = 50 ;
+        const top = 50;
+        const left = 50;
 
         return {
             top: `${top}%`,
@@ -106,7 +106,7 @@ const Home = () => {
                             <Typography id="modal-description" sx={{ mt: 2 }}>
                                 You need to Sign In before creating a new post.
                                 こんにちは！ようこそ。
-                                \\(^ ^)// 
+                                \\(^ ^)//
                             </Typography>
                         </div>
                     </Modal>

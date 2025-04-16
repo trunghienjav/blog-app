@@ -8,21 +8,28 @@ export default class CustomUploadApdapter {
     upload = () => {
         return this.loader.file.then(file => new Promise((resolve, reject) => {
             const formData = new FormData();
-            console.log("Nhảy vào CustomUploadApdapter");
             formData.append('upload', file);
+            console.log("in ra formData");
+            console.log(formData);
+            
             uploadImage('posts/upload', formData)
                 .then(res => {
-                    console.log("in ra res data-------------------------");
-                    console.log(res);
-                    resolve({
-                        '700': `${baseURL}/${res.data.url}`,
-                    })
+                    if (res.data && res.data.uploaded && res.data.url) {
+                        resolve({
+                            default: res.data.url
+                        });
+                    } else {
+                        reject(res.data?.error || 'Upload failed');
+                    }
                 })
                 .catch(err => {
-                    reject(err);
-                    console.log("mài bị ngáo à lỗi rồi");
-                    console.log(err);
+                    console.error("Upload error:", err);
+                    reject(err.response?.data?.error || 'Upload failed');
                 });
-        }))
+        }));
+    }
+
+    abort() {
+        // Abort upload if needed
     }
 }

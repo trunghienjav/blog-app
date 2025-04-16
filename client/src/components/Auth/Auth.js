@@ -6,7 +6,6 @@ import { GoogleLogin } from '@react-oauth/google';
 import { useHistory } from 'react-router-dom';
 import Input from './Input';
 import useStyles from './styles';
-// import icon from './icon';
 import jwt_decode from 'jwt-decode';
 import { signin, signup } from '../../actions/auth';
 

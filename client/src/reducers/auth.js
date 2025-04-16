@@ -8,7 +8,6 @@ const authReducer = (state = { authData: null }, action) => {
             return { ...state, authData: action?.payload };
         case LOGOUT:
             localStorage.clear();
-            // login thành công, lưu thông tin vào storage
             return { ...state, authData: null, loading: false, errors: null };
         default:
             return state;

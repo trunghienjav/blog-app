@@ -1,11 +1,19 @@
+import cloudinary from 'cloudinary';
 import express from 'express';
-import mongoose from "mongoose"
-import PostMessage from "../models/postMessage.js" //nhớ phải thêm .js
-import Image from "../models/image.js" //nhớ phải thêm .js
-import fs from 'fs';
-import path from 'path';
-const __dirname = path.resolve();//để dùng được cái ckeditor, đoạn này cài tùm lum thứ hết =))
+import mongoose from "mongoose";
 import multer from 'multer';
+import path from 'path';
+import dotenv from 'dotenv';
+import PostMessage from "../models/postMessage.js"; //nhớ phải thêm .js
+
+dotenv.config();
+
+// Configure Cloudinary
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 const router = express.Router(); //tại sao lại export thêm cái router ở đây nhỉ
 
@@ -13,7 +21,7 @@ const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         // Thư mục lưu trữ file upload
         cb(null, "public/uploads/");
-    },
+    }, 
     filename: (req, file, cb) => {
         // Đặt tên file cho file upload
         cb(null, Date.now() + path.extname(file.originalname));
@@ -21,54 +29,75 @@ const storage = multer.diskStorage({
 });
 
 // Khởi tạo middleware Multer với cấu hình đã định nghĩa
-const upload = multer({
-    storage: storage,
-    limits: {
-        fileSize: 10 * 1024 * 1024 // Giới hạn kích thước file upload (ở đây là 10MB)
-    },
-    fileFilter: (req, file, cb) => {
-        // Kiểm tra loại file được phép upload
-        if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
-            cb(null, true);
-        } else {
-            cb(new Error('Unsupported file format. Please upload a PNG or JPG file.'));
-        }
-    }
-}).single('upload'); // Chỉ cho phép upload một file với key là 'upload'
+// const upload = multer({
+//     storage: storage,
+//     limits: {
+//         fileSize: 10 * 1024 * 1024 // Giới hạn kích thước file upload (ở đây là 10MB)
+//     },
+//     fileFilter: (req, file, cb) => {
+//         // Kiểm tra loại file được phép upload
+//         if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+//             cb(null, true);
+//         } else {
+//             cb(new Error('Unsupported file format. Please upload a PNG or JPG file.'));
+//         }
+//     }
+// }).single('upload'); // Chỉ cho phép upload một file với key là 'upload'
 
 export const uploadImage = async (req, res) => {
+    try {
+        // Check if file exists in request
+        if (!req.files || !req.files.upload) {
+            return res.status(400).json({
+                uploaded: false,
+                error: "No file uploaded"
+            });
+        }
 
-    var TempFile = req.files.upload;
-    var TempPathfile = TempFile.path;
-    console.log("TempFile is: ");
-    console.log(TempFile);
-    console.log("TempPathfile is: "); //public\images\uVj_xCATOF_G_TxGOsnWjSXt.jpg
-    console.log(TempPathfile);
-    const targetPathUrl = path.join(__dirname, "./public/uploads/" + TempFile.name);
-    console.log("targetPathUrl is: ");
-    console.log(targetPathUrl);
+        const file = req.files.upload;
+        
+        // Validate file type
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+        console.log("in ra file.mimetype");
+        console.log(file.mimetype);
+        if (file.mimetype && !allowedTypes.includes(file.mimetype)) {
+            return res.status(400).json({
+                uploaded: false,
+                error: "Invalid file type. Only JPEG, PNG and GIF are allowed."
+            });
+        }
 
-    // Sử dụng middleware Multer để xử lý upload file
-    console.log("Vào uploadImage");
-    upload(req, res, (err) => {
-        console.log("in ra--------------------1: ");
+        // Upload to Cloudinary
+        try {
+            const result = await cloudinary.uploader.upload(file.path, {
+                folder: 'hienImage',
+                resource_type: 'auto',
+                transformation: [
+                    { width: 800, crop: "scale" }, // Thay đổi kích thước và giữ tỷ lệ
+                    { quality: "auto:good" } // Tự động tối ưu hóa chất lượng
+                ]
+            });
 
-        fs.rename(TempPathfile, targetPathUrl, err => { //di chuyển file từ đường dẫn tạm thời sang đường dẫn mục tiêu
-            if (err) {
-                console.log(err.message);
-                res.status(500).json({
-                    uploaded: false,
-                    error: "Error uploading image 123"
-                });
-            } else {
-                const imageUrl = `uploads/${TempFile.name}`;
-                res.status(200).json({
-                    uploaded: true,
-                    url: imageUrl
-                });
-            };
+            // Return the response in CKEditor expected format
+            return res.status(200).json({
+                uploaded: true,
+                url: result.secure_url
+            });
+        } catch (cloudinaryError) {
+            console.error('Cloudinary upload error:', cloudinaryError);
+            return res.status(500).json({
+                uploaded: false,
+                error: "Error uploading to cloud storage"
+            });
+        }
+
+    } catch (error) {
+        console.error('Upload error:', error);
+        return res.status(500).json({
+            uploaded: false,
+            error: "Server error while uploading image"
         });
-    });
+    }
 };
 
 export const getPosts = async (req, res) => {

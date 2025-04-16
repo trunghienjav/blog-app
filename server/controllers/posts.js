@@ -58,8 +58,6 @@ export const uploadImage = async (req, res) => {
         
         // Validate file type
         const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-        console.log("in ra file.mimetype");
-        console.log(file.mimetype);
         if (file.mimetype && !allowedTypes.includes(file.mimetype)) {
             return res.status(400).json({
                 uploaded: false,
@@ -69,13 +67,28 @@ export const uploadImage = async (req, res) => {
 
         // Upload to Cloudinary
         try {
-            // Check if we're running on Vercel (serverless) or local environment
-            const uploadData = process.env.VERCEL 
-                ? { data: file.buffer || Buffer.from(file.data) } // Use buffer directly on Vercel
-                : { path: file.path }; // Use file path in local environment
+            console.log("File properties available:", Object.keys(file));
+            
+            let uploadSource;
+            if (process.env.VERCEL === 'true') {
+                // Trong môi trường Vercel
+                if (file.buffer) {
+                    uploadSource = file.buffer;
+                } else if (file.data) {
+                    uploadSource = Buffer.from(file.data);
+                } else {
+                    // Fallback to path if buffer/data not available
+                    uploadSource = file.path;
+                }
+            } else {
+                // Trong môi trường local
+                uploadSource = file.path;
+            }
+            
+            console.log("Upload source type:", typeof uploadSource);
             
             const result = await cloudinary.uploader.upload(
-                uploadData.path || uploadData.data, 
+                uploadSource, 
                 {
                     folder: 'hienImage',
                     resource_type: 'auto',

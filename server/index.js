@@ -9,11 +9,6 @@ import userRoutes from './routes/user.js';
 // Load environment variables first
 dotenv.config();
 
-// Debug environment variables
-console.log('Environment Variables Config Check:');
-console.log('PORT:', process.env.PORT ? 'Found ✓' : 'Missing ✗');
-console.log('CONNECTION_URL:', process.env.CONNECTION_URL ? 'Found ✓' : 'Missing ✗');
-
 const app = express();
 
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
@@ -25,7 +20,7 @@ app.use('/posts', postRoutes); //phải đặt cái use route này ở sau xác 
 app.use('/user', userRoutes);
 
 app.get('/', (req, res) => {
-    res.send('SERVER IS RUNNINGG');
+    res.send('SERVER IS RUNNING');
 });
 
 const PORT = process.env.PORT || 5000;
